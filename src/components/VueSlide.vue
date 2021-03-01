@@ -5,12 +5,17 @@
     @mousemove="onMove"
     @mouseup="onEnd"
   >
-    <ul class="slide">
+    <ul
+      class="slide"
+      :style="{ transform: `translate3d(${distance.movePosition}px, 0, 0)` }"
+    >
       <li v-for="imagePath in imagesPath" :key="imagePath">
         <img :src="imagePath" />
       </li>
     </ul>
   </div>
+
+  {{ distance.movePosition }}
 </template>
 
 <script lang="ts">
@@ -20,6 +25,12 @@ export default defineComponent({
   name: 'VueSlide',
   setup: () => {
     const isClicking = ref(false)
+    const distance = ref({
+      finalPosition: 0,
+      startX: 0,
+      movement: 0,
+      movePosition: 0
+    })
 
     const imagesPath: Array<string> = [
       'src/assets/img/foto1.jpg',
@@ -30,25 +41,38 @@ export default defineComponent({
       'src/assets/img/foto6.jpg'
     ]
 
+    function moveSlide(distanceX: number) {
+      distance.value.movePosition = distanceX
+    }
+
+    function updatePosition(clientX: number) {
+      distance.value.movement = (distance.value.startX - clientX) * 1.6
+
+      return distance.value.finalPosition - distance.value.movement
+    }
+
     function onStart(event: MouseEvent) {
       event.preventDefault()
+      distance.value.startX = event.clientX
+
       isClicking.value = true
-      console.log('mousedown')
     }
 
     function onMove(event: MouseEvent) {
       if (isClicking.value) {
-        console.log('moveu')
+        const finalPosition = updatePosition(event.clientX)
+        moveSlide(finalPosition)
       }
     }
 
     function onEnd(event: MouseEvent) {
       isClicking.value = false
-      console.log('mouseup')
+      distance.value.finalPosition = distance.value.movePosition
     }
 
     return {
       imagesPath,
+      distance,
       onStart,
       onMove,
       onEnd
@@ -58,10 +82,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.slide-wrapper {
-  overflow: hidden;
-}
-
 .slide {
   display: flex;
 
