@@ -9,8 +9,8 @@
       class="slide"
       :style="{ transform: `translate3d(${distance.movePosition}px, 0, 0)` }"
     >
-      <li v-for="imagePath in imagesPath" :key="imagePath">
-        <img :src="imagePath" />
+      <li v-for="imageUrl in imagesUrl" :key="imageUrl">
+        <img :src="imageUrl" />
       </li>
     </ul>
   </div>
@@ -23,6 +23,12 @@ import { defineComponent, ref } from 'vue'
 
 export default defineComponent({
   name: 'VueSlide',
+  props: {
+    imagesUrl: {
+      type: Array,
+      required: true
+    }
+  },
   setup: () => {
     const isClicking = ref(false)
     const distance = ref({
@@ -31,15 +37,6 @@ export default defineComponent({
       movement: 0,
       movePosition: 0
     })
-
-    const imagesPath: Array<string> = [
-      'src/assets/img/foto1.jpg',
-      'src/assets/img/foto2.jpg',
-      'src/assets/img/foto3.jpg',
-      'src/assets/img/foto4.jpg',
-      'src/assets/img/foto5.jpg',
-      'src/assets/img/foto6.jpg'
-    ]
 
     function moveSlide(distanceX: number) {
       distance.value.movePosition = distanceX
@@ -71,7 +68,6 @@ export default defineComponent({
     }
 
     return {
-      imagesPath,
       distance,
       onStart,
       onMove,

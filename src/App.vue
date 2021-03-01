@@ -1,5 +1,14 @@
 <template>
-  <VueSlide />
+  <VueSlide
+    :images-url="[
+      'src/assets/img/foto1.jpg',
+      'src/assets/img/foto2.jpg',
+      'src/assets/img/foto3.jpg',
+      'src/assets/img/foto4.jpg',
+      'src/assets/img/foto5.jpg',
+      'src/assets/img/foto6.jpg'
+    ]"
+  />
 </template>
 
 <script lang="ts">
