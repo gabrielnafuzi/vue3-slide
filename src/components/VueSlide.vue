@@ -4,6 +4,9 @@
     @mousedown="onStart"
     @mousemove="onMove"
     @mouseup="onEnd"
+    @touchstart="onStart"
+    @touchmove="onMove"
+    @touchend="onEnd"
   >
     <ul
       class="slide"
@@ -38,31 +41,40 @@ export default defineComponent({
       movePosition: 0
     })
 
-    function moveSlide(distanceX: number) {
+    const moveSlide = (distanceX: number) => {
       distance.value.movePosition = distanceX
     }
 
-    function updatePosition(clientX: number) {
+    const updatePosition = (clientX: number) => {
       distance.value.movement = (distance.value.startX - clientX) * 1.6
 
       return distance.value.finalPosition - distance.value.movement
     }
 
-    function onStart(event: MouseEvent) {
-      event.preventDefault()
-      distance.value.startX = event.clientX
-
+    const onStart = (event: MouseEvent | TouchEvent) => {
       isClicking.value = true
+
+      if (event instanceof MouseEvent) {
+        event.preventDefault()
+        distance.value.startX = event.clientX
+      } else {
+        distance.value.startX = event.changedTouches[0].clientX
+      }
     }
 
-    function onMove(event: MouseEvent) {
+    const onMove = (event: MouseEvent | TouchEvent) => {
+      const pointerPosition =
+        event instanceof MouseEvent
+          ? event.clientX
+          : event.changedTouches[0].clientX
+
       if (isClicking.value) {
-        const finalPosition = updatePosition(event.clientX)
+        const finalPosition = updatePosition(pointerPosition)
         moveSlide(finalPosition)
       }
     }
 
-    function onEnd(event: MouseEvent) {
+    const onEnd = () => {
       isClicking.value = false
       distance.value.finalPosition = distance.value.movePosition
     }
