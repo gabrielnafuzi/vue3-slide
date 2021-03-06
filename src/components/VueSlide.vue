@@ -1,5 +1,6 @@
 <template>
   <div
+    ref="slideWrapper"
     class="slide-wrapper"
     @mousedown="onStart"
     @mousemove="onMove"
@@ -9,6 +10,7 @@
     @touchend="onEnd"
   >
     <ul
+      ref="slide"
       class="slide"
       :style="{ transform: `translate3d(${distance.movePosition}px, 0, 0)` }"
     >
@@ -17,12 +19,16 @@
       </li>
     </ul>
   </div>
-
   {{ distance.movePosition }}
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue'
+import { defineComponent, onMounted, reactive, ref } from 'vue'
+
+interface SlideArrayValue {
+  element: HTMLLIElement
+  position: number
+}
 
 export default defineComponent({
   name: 'VueSlide',
@@ -33,33 +39,43 @@ export default defineComponent({
     }
   },
   setup: () => {
+    const slide = ref<HTMLUListElement>()
+    const slideWrapper = ref<HTMLDivElement>()
     const isClicking = ref(false)
-    const distance = ref({
+    const slideArray = ref<SlideArrayValue[]>([])
+    const distance = reactive({
       finalPosition: 0,
       startX: 0,
       movement: 0,
       movePosition: 0
     })
 
+    onMounted(() => {
+      slidesConfig()
+    })
+
     const moveSlide = (distanceX: number) => {
-      distance.value.movePosition = distanceX
+      distance.movePosition = distanceX
     }
 
     const updatePosition = (clientX: number) => {
-      distance.value.movement = (distance.value.startX - clientX) * 1.6
+      distance.movement = (distance.startX - clientX) * 1.6
 
-      return distance.value.finalPosition - distance.value.movement
+      return distance.finalPosition - distance.movement
     }
 
     const onStart = (event: MouseEvent | TouchEvent) => {
       isClicking.value = true
+      slidesConfig()
 
       if (event instanceof MouseEvent) {
         event.preventDefault()
-        distance.value.startX = event.clientX
-      } else {
-        distance.value.startX = event.changedTouches[0].clientX
+        distance.startX = event.clientX
+
+        return
       }
+
+      distance.startX = event.changedTouches[0].clientX
     }
 
     const onMove = (event: MouseEvent | TouchEvent) => {
@@ -76,14 +92,30 @@ export default defineComponent({
 
     const onEnd = () => {
       isClicking.value = false
-      distance.value.finalPosition = distance.value.movePosition
+      distance.finalPosition = distance.movePosition
+    }
+
+    const slidesConfig = () => {
+      const slideChildren: HTMLLIElement[] = Object.values({
+        ...slide.value?.children
+      } as HTMLLIElement[])
+
+      slideChildren.forEach((slide: HTMLLIElement) => {
+        slideArray.value?.push({
+          element: slide,
+          position: slide.offsetLeft
+        })
+      })
     }
 
     return {
+      slide,
+      slideWrapper,
       distance,
       onStart,
       onMove,
-      onEnd
+      onEnd,
+      slidesConfig
     }
   }
 })
