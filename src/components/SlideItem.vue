@@ -16,7 +16,7 @@ export default defineComponent({
     },
     active: {
       type: Boolean,
-      rquals: true
+      required: true
     }
   }
 })
