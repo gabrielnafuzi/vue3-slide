@@ -12,7 +12,10 @@
     <ul
       ref="slide"
       class="slide"
-      :style="{ transform: `translate3d(${distance.movePosition}px, 0, 0)` }"
+      :style="[
+        { transform: `translate3d(${distance.movePosition}px, 0, 0)` },
+        transitionActive && { transition: 'transform .3s' }
+      ]"
     >
       <SlideItem
         v-for="imageUrl in imagesUrl"
@@ -25,7 +28,7 @@
 
 <script lang="ts">
 import { defineComponent, onMounted, reactive, ref } from 'vue'
-import { SlideArrayItem, Distance, SlideIndex } from '../@types/index'
+import { SlideArrayItem, Distance, SlideIndex } from '../@types/slide'
 import SlideItem from './SlideItem.vue'
 
 export default defineComponent({
@@ -49,6 +52,7 @@ export default defineComponent({
       next: 0
     })
     const isClicking = ref<boolean>(false)
+    const transitionActive = ref<boolean>(false)
     const distance = reactive<Distance>({
       finalPosition: 0,
       startX: 0,
@@ -59,6 +63,7 @@ export default defineComponent({
     onMounted(() => {
       slideConfig()
       changeSlide(0)
+      transitionActive.value = true
     })
 
     const onStart = (event: MouseEvent | TouchEvent): void => {
@@ -72,6 +77,7 @@ export default defineComponent({
       }
 
       distance.startX = event.changedTouches[0].clientX
+      transitionActive.value = false
     }
 
     const onMove = (event: MouseEvent | TouchEvent): void => {
@@ -89,6 +95,26 @@ export default defineComponent({
     const onEnd = (): void => {
       isClicking.value = false
       distance.finalPosition = distance.movePosition
+      transitionActive.value = true
+      changeSlideOnEnd()
+    }
+
+    const changeSlideOnEnd = (): void => {
+      const size = 120
+      const hasNext = slideIndex.value.next !== null
+      const hasPrev = slideIndex.value.prev !== null
+
+      if (distance.movement > size && hasNext) {
+        activeNextSlide()
+        return
+      }
+
+      if (distance.movement < -size && hasPrev) {
+        activePrevSlide()
+        return
+      }
+
+      changeSlide(slideIndex.value.active)
     }
 
     const updatePosition = (clientX: number): number => {
@@ -139,13 +165,26 @@ export default defineComponent({
       })
     }
 
+    const activePrevSlide = (): void => {
+      if (slideIndex.value.prev !== null) {
+        changeSlide(slideIndex.value.prev ?? 0)
+      }
+    }
+
+    const activeNextSlide = (): void => {
+      if (slideIndex.value.next !== null) {
+        changeSlide(slideIndex.value.next ?? 0)
+      }
+    }
+
     return {
       slide,
       slideWrapper,
       distance,
       onStart,
       onMove,
-      onEnd
+      onEnd,
+      transitionActive
     }
   }
 })
