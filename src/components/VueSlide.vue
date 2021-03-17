@@ -61,7 +61,7 @@ export default defineComponent({
       movePosition: 0
     })
 
-    onMounted(async () => {
+    onMounted(() => {
       transitionActive.value = true
       slideConfig()
       changeSlide(0)
