@@ -52,7 +52,7 @@ export default defineComponent({
       active: 0,
       next: 0
     })
-    const moveType = ref<string | null>('')
+    const moveType = ref<string | null>(null)
     const transitionActive = ref<boolean>(false)
     const distance = reactive<Distance>({
       finalPosition: 0,
