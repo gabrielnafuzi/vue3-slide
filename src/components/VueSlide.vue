@@ -3,11 +3,10 @@
     ref="slideWrapper"
     class="slide-wrapper"
     @mousedown="onStart"
-    @mousemove="onMove"
     @mouseup="onEnd"
     @touchstart="onStart"
-    @touchmove="onMove"
     @touchend="onEnd"
+    @[moveType]="onMove"
   >
     <ul
       ref="slide"
@@ -18,9 +17,10 @@
       ]"
     >
       <SlideItem
-        v-for="imageUrl in imagesUrl"
+        v-for="(imageUrl, index) in imagesUrl"
         :key="imageUrl"
         :image-url="imageUrl"
+        :active="index === slideIndex.active"
       />
     </ul>
   </div>
@@ -29,6 +29,7 @@
 <script lang="ts">
 import { defineComponent, onMounted, reactive, ref } from 'vue'
 import { SlideArrayItem, Distance, SlideIndex } from '../@types/slide'
+import debounce from '../helpers/debounce'
 import SlideItem from './SlideItem.vue'
 
 export default defineComponent({
@@ -51,7 +52,7 @@ export default defineComponent({
       active: 0,
       next: 0
     })
-    const isClicking = ref<boolean>(false)
+    const moveType = ref<string | null>('')
     const transitionActive = ref<boolean>(false)
     const distance = reactive<Distance>({
       finalPosition: 0,
@@ -60,24 +61,26 @@ export default defineComponent({
       movePosition: 0
     })
 
-    onMounted(() => {
+    onMounted(async () => {
+      transitionActive.value = true
       slideConfig()
       changeSlide(0)
-      transitionActive.value = true
+      addResizeEvent()
     })
 
     const onStart = (event: MouseEvent | TouchEvent): void => {
-      isClicking.value = true
+      transitionActive.value = false
 
       if (event instanceof MouseEvent) {
         event.preventDefault()
         distance.startX = event.clientX
+        moveType.value = 'mousemove'
 
         return
       }
 
       distance.startX = event.changedTouches[0].clientX
-      transitionActive.value = false
+      moveType.value = 'touchmove'
     }
 
     const onMove = (event: MouseEvent | TouchEvent): void => {
@@ -86,17 +89,26 @@ export default defineComponent({
           ? event.clientX
           : event.changedTouches[0].clientX
 
-      if (isClicking.value) {
-        const finalPosition = updatePosition(pointerPosition)
-        moveSlide(finalPosition)
-      }
+      const finalPosition = updatePosition(pointerPosition)
+      moveSlide(finalPosition)
     }
 
     const onEnd = (): void => {
-      isClicking.value = false
+      moveType.value = null
       distance.finalPosition = distance.movePosition
       transitionActive.value = true
       changeSlideOnEnd()
+    }
+
+    const onResize = (): void => {
+      setTimeout(async () => {
+        slideConfig()
+        changeSlide(slideIndex.value.active)
+      }, 100)
+    }
+
+    const addResizeEvent = (): void => {
+      window.addEventListener('resize', debounce(onResize, 200))
     }
 
     const changeSlideOnEnd = (): void => {
@@ -106,11 +118,13 @@ export default defineComponent({
 
       if (distance.movement > size && hasNext) {
         activeNextSlide()
+
         return
       }
 
       if (distance.movement < -size && hasPrev) {
         activePrevSlide()
+
         return
       }
 
@@ -155,14 +169,10 @@ export default defineComponent({
         ...slide.value?.children
       } as HTMLLIElement[])
 
-      slideChildren.forEach((element: HTMLLIElement) => {
-        const position: number = slidePosition(element)
-
-        slideArray.value?.push({
-          element,
-          position
-        })
-      })
+      slideArray.value = slideChildren.map((element: HTMLLIElement) => ({
+        element,
+        position: slidePosition(element)
+      }))
     }
 
     const activePrevSlide = (): void => {
@@ -179,19 +189,29 @@ export default defineComponent({
 
     return {
       slide,
+      slideIndex,
       slideWrapper,
       distance,
       onStart,
       onMove,
       onEnd,
-      transitionActive
+      transitionActive,
+      moveType
     }
   }
 })
 </script>
 
 <style lang="scss" scoped>
+.slide-wrapper {
+  overflow: hidden;
+}
+
 .slide {
   display: flex;
+
+  &:hover {
+    will-change: transform;
+  }
 }
 </style>
