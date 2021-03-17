@@ -101,7 +101,7 @@ export default defineComponent({
     }
 
     const onResize = (): void => {
-      setTimeout(async () => {
+      setTimeout(() => {
         slideConfig()
         changeSlide(slideIndex.value.active)
       }, 100)
@@ -118,13 +118,11 @@ export default defineComponent({
 
       if (distance.movement > size && hasNext) {
         activeNextSlide()
-
         return
       }
 
       if (distance.movement < -size && hasPrev) {
         activePrevSlide()
-
         return
       }
 
