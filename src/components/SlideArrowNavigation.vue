@@ -40,11 +40,13 @@ export default defineComponent({
 <style lang="scss" scoped>
 .arrow-navigation {
   position: absolute;
-  width: 100%;
   height: 100%;
+  width: 80vw;
+  max-width: 800px;
+  margin: 0 auto;
   display: flex;
   align-items: center;
-  justify-content: space-around;
+  justify-content: space-between;
   top: 0;
   right: 0;
   left: 0;
@@ -53,10 +55,9 @@ export default defineComponent({
 
 .arrow {
   -webkit-appearance: none;
-  background: transparent;
   border: 0;
   outline: 0;
-  background: rgba(15, 15, 15, 0.7);
+  background: rgba(10, 10, 10, 0.6);
   border-radius: 50%;
 
   display: flex;
@@ -73,12 +74,12 @@ export default defineComponent({
     &:hover,
     &:focus {
       polyline {
-        stroke-width: 5;
+        stroke-width: 6;
       }
     }
 
     &:active polyline {
-      stroke-width: 7;
+      stroke-width: 8;
       transition: all 100ms ease-in-out;
     }
   }
