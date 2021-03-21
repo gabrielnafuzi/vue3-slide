@@ -1,46 +1,63 @@
 <template>
-  <div
-    ref="slideWrapper"
-    class="slide-wrapper"
-    @mousedown="onStart"
-    @mouseup="onEnd"
-    @touchstart="onStart"
-    @touchend="onEnd"
-    @[moveType]="onMove"
-  >
-    <ul
-      ref="slide"
-      class="slide"
-      :style="[
-        { transform: `translate3d(${distance.movePosition}px, 0, 0)` },
-        transitionActive && { transition: 'transform .3s' }
-      ]"
+  <div class="slide-container">
+    <div
+      ref="slideWrapper"
+      class="slide-wrapper"
+      @mousedown="onStart"
+      @mouseup="onEnd"
+      @touchstart="onStart"
+      @touchend="onEnd"
+      @[moveType]="onMove"
     >
-      <SlideItem
-        v-for="(imageUrl, index) in imagesUrl"
-        :key="imageUrl"
-        :image-url="imageUrl"
-        :active="index === slideIndex.active"
-      />
-    </ul>
+      <ul
+        ref="slide"
+        class="slide"
+        :style="[
+          { transform: `translate3d(${distance.movePosition}px, 0, 0)` },
+          transitionActive && { transition: 'transform .3s' }
+        ]"
+      >
+        <SlideItem
+          v-for="(imageUrl, index) in imagesUrl"
+          :key="imageUrl"
+          :image-url="imageUrl"
+          :active="index === slideIndex.active"
+        />
+      </ul>
+    </div>
+
+    <SlideArrowNavigation
+      v-if="showArrowNavigation"
+      @prev="activePrevSlide"
+      @next="activeNextSlide"
+    />
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, onMounted, reactive, ref } from 'vue'
+
+import SlideItem from './SlideItem.vue'
+import SlideArrowNavigation from './SlideArrowNavigation.vue'
+
 import { SlideArrayItem, Distance, SlideIndex } from '../@types/slide'
 import debounce from '../helpers/debounce'
-import SlideItem from './SlideItem.vue'
 
 export default defineComponent({
   name: 'VueSlide',
   components: {
-    SlideItem
+    SlideItem,
+    SlideArrowNavigation
   },
   props: {
     imagesUrl: {
       type: Array,
       required: true
+    },
+    showArrowNavigation: {
+      type: Boolean,
+      required: false,
+      default: false
     }
   },
   setup: () => {
@@ -194,13 +211,19 @@ export default defineComponent({
       onMove,
       onEnd,
       transitionActive,
-      moveType
+      moveType,
+      activePrevSlide,
+      activeNextSlide
     }
   }
 })
 </script>
 
 <style lang="scss" scoped>
+.slide-container {
+  position: relative;
+}
+
 .slide-wrapper {
   overflow: hidden;
 }
