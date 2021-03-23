@@ -42,7 +42,7 @@ export default defineComponent({
   position: absolute;
   height: 100%;
   width: 80vw;
-  max-width: 800px;
+  max-width: 850px;
   margin: 0 auto;
   display: flex;
   align-items: center;
@@ -57,7 +57,7 @@ export default defineComponent({
   -webkit-appearance: none;
   border: 0;
   outline: 0;
-  background: rgba(10, 10, 10, 0.6);
+  background: rgba(64, 64, 64, 0.77);
   border-radius: 50%;
 
   display: flex;
