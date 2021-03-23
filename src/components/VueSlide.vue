@@ -2,6 +2,10 @@
   <div class="slide-container">
     <div
       ref="slideWrapper"
+      :style="{
+        pointerEvents: showArrowNavigation ? 'none' : 'all',
+        userSelect: showArrowNavigation ? 'none' : 'all'
+      }"
       class="slide-wrapper"
       @mousedown="onStart"
       @mouseup="onEnd"
@@ -31,6 +35,16 @@
       @prev="activePrevSlide"
       @next="activeNextSlide"
     />
+
+    <slot v-if="showControl" name="custom-control">
+      <SlideControl
+        :images-length="imagesUrl.length"
+        :active-index="slideIndex.active"
+        :dots-color="controlDotsColor"
+        :active-dot-color="controlActiveDotColor"
+        @change-to="changeSlide"
+      />
+    </slot>
   </div>
 </template>
 
@@ -39,6 +53,7 @@ import { defineComponent, onMounted, reactive, ref } from 'vue'
 
 import SlideItem from './SlideItem.vue'
 import SlideArrowNavigation from './SlideArrowNavigation.vue'
+import SlideControl from './SlideControl.vue'
 
 import { SlideArrayItem, Distance, SlideIndex } from '../@types/slide'
 import debounce from '../helpers/debounce'
@@ -47,7 +62,8 @@ export default defineComponent({
   name: 'VueSlide',
   components: {
     SlideItem,
-    SlideArrowNavigation
+    SlideArrowNavigation,
+    SlideControl
   },
   props: {
     imagesUrl: {
@@ -58,6 +74,21 @@ export default defineComponent({
       type: Boolean,
       required: false,
       default: false
+    },
+    showControl: {
+      type: Boolean,
+      required: false,
+      default: false
+    },
+    controlDotsColor: {
+      type: String,
+      required: false,
+      default: '#404040c4'
+    },
+    controlActiveDotColor: {
+      type: String,
+      required: false,
+      default: '#222'
     }
   },
   setup: () => {
@@ -213,7 +244,8 @@ export default defineComponent({
       transitionActive,
       moveType,
       activePrevSlide,
-      activeNextSlide
+      activeNextSlide,
+      changeSlide
     }
   }
 })
@@ -222,6 +254,8 @@ export default defineComponent({
 <style lang="scss" scoped>
 .slide-container {
   position: relative;
+  display: flex;
+  justify-content: center;
 }
 
 .slide-wrapper {
