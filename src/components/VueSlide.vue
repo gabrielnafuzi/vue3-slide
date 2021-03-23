@@ -89,9 +89,19 @@ export default defineComponent({
       type: String,
       required: false,
       default: '#222'
+    },
+    autoplay: {
+      type: Boolean,
+      required: false,
+      default: false
+    },
+    autoplayDelay: {
+      type: Number,
+      required: false,
+      default: 4500
     }
   },
-  setup: () => {
+  setup: props => {
     const slide = ref<HTMLUListElement>()
     const slideWrapper = ref<HTMLDivElement>()
     const slideArray = ref<SlideArrayItem[]>([])
@@ -108,12 +118,17 @@ export default defineComponent({
       movement: 0,
       movePosition: 0
     })
+    const autoplayInterval = ref<number>(0)
 
     onMounted(() => {
       transitionActive.value = true
       slideConfig()
       changeSlide(0)
       addResizeEvent()
+
+      if (props.autoplay) {
+        slideAutoplay()
+      }
     })
 
     const onStart = (event: MouseEvent | TouchEvent): void => {
@@ -222,15 +237,28 @@ export default defineComponent({
     }
 
     const activePrevSlide = (): void => {
+      clearInterval(autoplayInterval.value)
+
       if (slideIndex.value.prev !== null) {
-        changeSlide(slideIndex.value.prev ?? 0)
+        changeSlide(slideIndex.value.prev)
       }
+
+      slideAutoplay()
     }
 
     const activeNextSlide = (): void => {
-      if (slideIndex.value.next !== null) {
-        changeSlide(slideIndex.value.next ?? 0)
-      }
+      clearInterval(autoplayInterval.value)
+      changeSlide(slideIndex.value.next !== null ? slideIndex.value.next : 0)
+
+      slideAutoplay()
+    }
+
+    const slideAutoplay = (): void => {
+      const { autoplayDelay: delay } = props
+
+      autoplayInterval.value = setInterval(() => {
+        activeNextSlide()
+      }, delay)
     }
 
     return {

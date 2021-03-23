@@ -12,6 +12,7 @@
     ]"
     show-arrow-navigation
     show-control
+    autoplay
   />
 </template>
 
