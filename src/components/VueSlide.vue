@@ -126,9 +126,7 @@ export default defineComponent({
       changeSlide(0)
       addResizeEvent()
 
-      if (props.autoplay) {
-        slideAutoplay()
-      }
+      props.autoplay && slideAutoplay()
     })
 
     const onStart = (event: MouseEvent | TouchEvent): void => {
@@ -243,14 +241,14 @@ export default defineComponent({
         changeSlide(slideIndex.value.prev)
       }
 
-      slideAutoplay()
+      props.autoplay && slideAutoplay()
     }
 
     const activeNextSlide = (): void => {
       clearInterval(autoplayInterval.value)
       changeSlide(slideIndex.value.next !== null ? slideIndex.value.next : 0)
 
-      slideAutoplay()
+      props.autoplay && slideAutoplay()
     }
 
     const slideAutoplay = (): void => {
