@@ -16,6 +16,7 @@
 import { computed, defineComponent } from 'vue'
 
 export default defineComponent({
+  name: 'SlideControl',
   props: {
     imagesLength: {
       type: Number,
@@ -47,11 +48,6 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .slide-control {
-  display: flex;
-  justify-content: center;
-  margin-top: 20px;
-  position: absolute;
-  z-index: 20;
   bottom: -44px;
 
   li {
@@ -65,6 +61,7 @@ export default defineComponent({
       text-indent: -9999px;
       margin: 5px;
       border: none;
+      padding: 0;
       cursor: pointer;
       outline: none;
       transition: 0.4s all ease;

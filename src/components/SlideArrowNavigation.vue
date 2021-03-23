@@ -31,6 +31,7 @@
 import { defineComponent } from 'vue'
 
 export default defineComponent({
+  name: 'SlideArrowNavigation',
   setup: (_, { emit }) => {
     return { emit }
   }
@@ -80,12 +81,12 @@ export default defineComponent({
 
     &:active polyline {
       stroke-width: 8;
-      transition: all 100ms ease-in-out;
+      transition: all 0.1s ease-in-out;
     }
   }
 
   polyline {
-    transition: all 250ms ease-in-out;
+    transition: all 0.25s ease-in-out;
   }
 }
 </style>

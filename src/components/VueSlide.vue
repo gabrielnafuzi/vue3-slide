@@ -32,19 +32,35 @@
 
     <SlideArrowNavigation
       v-if="showArrowNavigation"
+      :active-index="slideIndex.active"
       @prev="activePrevSlide"
       @next="activeNextSlide"
     />
 
-    <slot v-if="showControl" name="custom-control">
-      <SlideControl
-        :images-length="imagesUrl.length"
+    <div v-if="showControl" class="slide-control-wrapper">
+      <slot
+        name="custom-control"
         :active-index="slideIndex.active"
-        :dots-color="controlDotsColor"
-        :active-dot-color="controlActiveDotColor"
-        @change-to="changeSlide"
-      />
-    </slot>
+        :images-length="imagesUrl.length"
+        :changeSlideTo="changeSlide"
+      >
+        <SlideControlWithThumbnail
+          v-if="controlWithThumbnail"
+          :active-index="slideIndex.active"
+          :images-url="imagesUrl"
+          @change-to="changeSlide"
+        />
+
+        <SlideControl
+          v-else
+          :images-length="imagesUrl.length"
+          :active-index="slideIndex.active"
+          :dots-color="controlDotsColor"
+          :active-dot-color="controlActiveDotColor"
+          @change-to="changeSlide"
+        />
+      </slot>
+    </div>
   </div>
 </template>
 
@@ -54,6 +70,7 @@ import { defineComponent, onMounted, reactive, ref } from 'vue'
 import SlideItem from './SlideItem.vue'
 import SlideArrowNavigation from './SlideArrowNavigation.vue'
 import SlideControl from './SlideControl.vue'
+import SlideControlWithThumbnail from './SlideControlWithThumbnail.vue'
 
 import { SlideArrayItem, Distance, SlideIndex } from '../@types/slide'
 import debounce from '../helpers/debounce'
@@ -63,7 +80,8 @@ export default defineComponent({
   components: {
     SlideItem,
     SlideArrowNavigation,
-    SlideControl
+    SlideControl,
+    SlideControlWithThumbnail
   },
   props: {
     imagesUrl: {
@@ -99,6 +117,11 @@ export default defineComponent({
       type: Number,
       required: false,
       default: 4500
+    },
+    controlWithThumbnail: {
+      type: Boolean,
+      required: false,
+      default: false
     }
   },
   setup: props => {
@@ -235,11 +258,10 @@ export default defineComponent({
     }
 
     const activePrevSlide = (): void => {
-      clearInterval(autoplayInterval.value)
+      const last = props.imagesUrl.length - 1
 
-      if (slideIndex.value.prev !== null) {
-        changeSlide(slideIndex.value.prev)
-      }
+      clearInterval(autoplayInterval.value)
+      changeSlide(slideIndex.value.prev !== null ? slideIndex.value.prev : last)
 
       props.autoplay && slideAutoplay()
     }
@@ -293,6 +315,22 @@ export default defineComponent({
 
   &:hover {
     will-change: transform;
+  }
+}
+</style>
+
+<style lang="scss">
+.slide-control-wrapper {
+  display: contents;
+
+  > * {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 20px;
+    position: absolute;
+    z-index: 20;
+    bottom: -62px;
   }
 }
 </style>
