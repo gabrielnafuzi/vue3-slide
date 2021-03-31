@@ -1,7 +1,31 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
-
+import createTypes from './script/createType'
+const path = require('path')
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [vue()]
+  plugins: [
+    vue({
+      style: {
+        filename: 'vue3-slide'
+      }
+    }),
+    createTypes()
+  ],
+  build: {
+    lib: {
+      entry: path.resolve(__dirname, 'src/index.ts'),
+      name: 'vue3-slide',
+      formats: ['es', 'umd']
+    },
+    rollupOptions: {
+      external: ['vue'],
+      output: {
+        globals: {
+          vue: 'Vue'
+        },
+        exports: 'named'
+      }
+    }
+  }
 })

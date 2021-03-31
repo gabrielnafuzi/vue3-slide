@@ -1,6 +1,26 @@
 {
   "name": "vue3-slide",
-  "version": "0.0.0",
+  "version": "0.0.2",
+  "files": [
+    "dist"
+  ],
+  "keywords": [
+    "vue3",
+    "vite",
+    "typescript",
+    "vue-slide",
+    "slide",
+    "vue3-slide"
+  ],
+  "main": "./dist/vue3-slide.umd.js",
+  "module": "./dist/vue3-slide.es.js",
+  "exports": {
+    ".": {
+      "import": "./dist/vue3-slide.es.js",
+      "require": "./dist/vue3-slide.umd.js"
+    }
+  },
+  "typings": "./dist/types.d.ts",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -12,6 +32,7 @@
     "vue": "^3.0.5"
   },
   "devDependencies": {
+    "@types/node": "^14.14.31",
     "@typescript-eslint/eslint-plugin": "^4.11.0",
     "@typescript-eslint/parser": "^4.11.0",
     "autoprefixer": "^9.8.6",

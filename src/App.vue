@@ -25,6 +25,8 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
+@import '../dist/style.css';
+
 body {
   margin: 0px;
 }
