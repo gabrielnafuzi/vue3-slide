@@ -22,7 +22,7 @@ export default defineComponent({
 })
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
 .slide-item {
   flex-shrink: 0;
   width: 80vw;
@@ -35,10 +35,9 @@ export default defineComponent({
   opacity: 0.8;
   transform: scale(0.8);
   transition: 0.4s;
-
-  &.active {
-    opacity: 1;
-    transform: scale(1);
-  }
+}
+.slide-item.active {
+  opacity: 1;
+  transform: scale(1);
 }
 </style>

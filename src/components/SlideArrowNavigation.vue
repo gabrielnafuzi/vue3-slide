@@ -27,7 +27,7 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import { defineComponent } from 'vue'
 
 export default defineComponent({
@@ -38,7 +38,7 @@ export default defineComponent({
 })
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
 .arrow-navigation {
   position: absolute;
   height: 100%;
@@ -53,40 +53,32 @@ export default defineComponent({
   left: 0;
   z-index: 10;
 }
-
 .arrow {
   -webkit-appearance: none;
   border: 0;
   outline: 0;
   background: rgba(64, 64, 64, 0.77);
   border-radius: 50%;
-
   display: flex;
   align-items: center;
   justify-content: center;
   width: 60px;
   height: 60px;
   padding: 0;
-
   cursor: pointer;
-
-  &-prev,
-  &-next {
-    &:hover,
-    &:focus {
-      polyline {
-        stroke-width: 6;
-      }
-    }
-
-    &:active polyline {
-      stroke-width: 8;
-      transition: all 0.1s ease-in-out;
-    }
-  }
-
-  polyline {
-    transition: all 0.25s ease-in-out;
-  }
+}
+.arrow-prev:hover polyline,
+.arrow-next:hover polyline,
+.arrow-prev:focus polyline,
+.arrow-next:focus polyline {
+  stroke-width: 6;
+}
+.arrow-prev:active polyline,
+.arrow-next:active polyline {
+  stroke-width: 8;
+  transition: all 0.1s ease-in-out;
+}
+.arrow polyline {
+  transition: all 0.25s ease-in-out;
 }
 </style>

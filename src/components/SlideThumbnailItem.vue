@@ -25,7 +25,7 @@ export default defineComponent({
 })
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
 .slide-thumbnail-item {
   opacity: 0.8;
   transform: scale(0.8);
@@ -42,10 +42,10 @@ export default defineComponent({
   cursor: pointer;
   outline: none;
   transition: 0.3s;
+}
 
-  &.active {
-    opacity: 1;
-    transform: scale(1);
-  }
+.slide-thumbnail-item.active {
+  opacity: 1;
+  transform: scale(1);
 }
 </style>

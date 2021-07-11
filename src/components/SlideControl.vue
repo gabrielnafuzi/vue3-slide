@@ -46,31 +46,27 @@ export default defineComponent({
 })
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
 .slide-control {
   bottom: -44px;
-
-  li {
-    button {
-      display: block;
-      width: 13px;
-      height: 13px;
-      background: var(--dots-color);
-      border-radius: 50%;
-      overflow: hidden;
-      text-indent: -9999px;
-      margin: 5px;
-      border: none;
-      padding: 0;
-      cursor: pointer;
-      outline: none;
-      transition: 0.4s all ease;
-    }
-
-    &.active button,
-    button:hover {
-      background: var(--active-dot-color);
-    }
-  }
+}
+.slide-control li button {
+  display: block;
+  width: 13px;
+  height: 13px;
+  background: var(--dots-color);
+  border-radius: 50%;
+  overflow: hidden;
+  text-indent: -9999px;
+  margin: 5px;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  outline: none;
+  transition: 0.4s all ease;
+}
+.slide-control li.active button,
+.slide-control li button:hover {
+  background: var(--active-dot-color);
 }
 </style>

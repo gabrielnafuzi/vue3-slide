@@ -299,7 +299,7 @@ export default defineComponent({
 })
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
 .slide-container {
   position: relative;
   display: flex;
@@ -312,25 +312,36 @@ export default defineComponent({
 
 .slide {
   display: flex;
+}
 
-  &:hover {
-    will-change: transform;
-  }
+.slide:hover {
+  will-change: transform;
+}
+
+ul {
+  padding: 0px;
+  margin: 0px;
+  list-style: none;
 }
 </style>
 
-<style lang="scss">
+<style>
+img {
+  display: block;
+  max-width: 100%;
+}
+
 .slide-control-wrapper {
   display: contents;
+}
 
-  > * {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    margin-top: 20px;
-    position: absolute;
-    z-index: 20;
-    bottom: -62px;
-  }
+.slide-control-wrapper > * {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 20px;
+  position: absolute;
+  z-index: 20;
+  bottom: -62px;
 }
 </style>
