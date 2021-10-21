@@ -8,7 +8,8 @@ export default function debounce(
     if (timer) clearTimeout(timer)
 
     timer = setTimeout(() => {
-      callback([...args])
+      callback(...args)
+
       timer = 0
     }, delay)
   }
